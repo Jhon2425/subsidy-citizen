@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* =========================================================
+   SENIOR CITIZEN SUBSIDY SYSTEM
+   GLOBAL COLORS
+========================================================= */
+
+:root {
+    --sc-green: oklch(45% 0.15 151.711);
+    --sc-green-light: oklch(79.2% 0.209 151.711);
+    --sc-green-dark: oklch(35% 0.12 151.711);
+
+    --sidebar-width: 288px;
+    --sidebar-collapsed-width: 80px;
+    --navbar-height: 80px;
+
+    /* Shell animation — one duration, one curve, used by every
+       moving part so their edges never drift out of step. */
+    --shell-duration: 300ms;
+    --shell-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --shell-label-duration: 200ms;
+
+    /* Toggle button sits on the sidebar's right edge, and must
+       travel exactly the distance the sidebar shrinks. */
+    --sidebar-delta: calc(
+        var(--sidebar-width) - var(--sidebar-collapsed-width)
+    );
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sc-sidebar {
+    width: var(--sidebar-width);
+    background: var(--sc-green);
+    border-right: 1px solid var(--sc-green-dark);
+
+    transition:
+        width var(--shell-duration) var(--shell-ease),
+        transform var(--shell-duration) var(--shell-ease);
+    will-change: width, transform;
+}
+
+@media (min-width: 1024px) {
+    .sc-sidebar-collapsed {
+        width: var(--sidebar-collapsed-width);
+    }
+}
+
+/* Fixed-width inner shell. The sidebar clips this, so contents
+   are revealed and hidden rather than re-laid-out every frame. */
+.sc-sidebar-inner {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.sc-navbar {
+    height: var(--navbar-height);
+    background: var(--sc-green);
+    color: white;
+    border-bottom: 1px solid var(--sc-green-dark);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.sc-main {
+    transition: margin-left var(--shell-duration) var(--shell-ease);
+}
+
+@media (min-width: 1024px) {
+    .sc-main-expanded {
+        margin-left: var(--sidebar-width);
+    }
+
+    .sc-main-collapsed {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+}
+
+
+/* =========================================================
+   COLLAPSE TOGGLE
+========================================================= */
+
+.sc-toggle {
+    left: calc(var(--sidebar-width) - 16px);
+
+    background: var(--sc-green);
+    border: 1px solid rgb(255 255 255 / 0.2);
+
+    transition:
+        transform var(--shell-duration) var(--shell-ease),
+        background-color 150ms ease,
+        color 150ms ease;
+}
+
+.sc-toggle-collapsed {
+    transform: translateX(calc(var(--sidebar-delta) * -1));
+}
+
+
+/* =========================================================
+   SIDEBAR LABELS
+
+   Faded, never unmounted. Toggling `display` (x-show) forces
+   a reflow of the whole sidebar column mid-resize, which is
+   what makes the collapse stutter.
+========================================================= */
+
+.sc-label {
+    transition: opacity var(--shell-label-duration) ease;
+}
+
+.sc-label-hidden {
+    opacity: 0;
+}
+
+.sc-label-visible {
+    opacity: 1;
+    /* Let the width finish opening before text returns. */
+    transition-delay: 150ms;
+}
+
+
+/* =========================================================
+   DASHBOARD CARDS
+========================================================= */
+
+.sc-card {
+    contain: layout style paint;
+}
+
+
+/* =========================================================
+   GREEN ACCENTS
+========================================================= */
+
+.sc-accent {
+    color: var(--sc-green-light);
+}
+
+.sc-accent-bg {
+    background: var(--sc-green-light);
+}
+
+.sc-accent-text {
+    color: var(--sc-green-dark);
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .sc-sidebar,
+    .sc-main,
+    .sc-toggle,
+    .sc-label {
+        transition-duration: 0.01ms !important;
+    }
+}
